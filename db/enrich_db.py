@@ -1,11 +1,10 @@
-"""Enriquece db/oulad_proyecto.db con identidades sinteticas y recibos de consentimiento.
+# estudiantes_identidad: identificadores directos sinteticos (Faker es_PE), separados de la tabla analitica.
+# consent_receipts: recibos estilo Kantara Initiative (Consent Receipt Specification v1.1).
 
-- estudiantes_identidad: identificadores directos sinteticos (Faker es_PE), separados de la tabla analitica.
-- consent_receipts: recibos estilo Kantara Initiative (Consent Receipt Specification v1.1).
-  * alerta_temprana_academica -> base legal: relacion contractual educativa (Ley 29733, Art. 14), no consentimiento.
-  * investigacion_externa     -> consentimiento expreso opt-in separado (~65% otorga, ~35% rechaza).
-Datos 100% sinteticos; reproducibles mediante semilla fija.
-"""
+# alerta_temprana_academica -> base legal: relacion contractual educativa (Ley 29733, Art. 14), no consentimiento.
+# investigacion_externa     -> consentimiento expreso opt-in separado (~65% otorga, ~35% rechaza).
+# Datos 100% sinteticos; reproducibles mediante semilla fija.
+
 import os
 import sqlite3
 import unicodedata

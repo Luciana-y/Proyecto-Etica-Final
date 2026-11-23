@@ -1,8 +1,6 @@
-"""Construye db/oulad_proyecto.db y data/processed/oulad_analitico.parquet a partir de OULAD.
+# Construye db/oulad_proyecto.db y data/processed/oulad_analitico.parquet a partir de OULAD.
+# Ventana de observacion: primeros 60 dias del curso (alerta temprana).
 
-Ventana de observacion: primeros 60 dias del curso (alerta temprana).
-Se excluye date_unregistration para evitar data leakage.
-"""
 import os
 import sqlite3
 

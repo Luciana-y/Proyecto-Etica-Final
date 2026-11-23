@@ -1,8 +1,3 @@
-"""Demo Streamlit: auditoria de re-identificacion, simulador ε-DP y portal del estudiante.
-
-Ejecutar desde la raiz:  streamlit run frontend/app.py   (requiere el backend en API_URL)
-Solo componentes nativos de Streamlit; sin CSS/HTML personalizado.
-"""
 import os
 from pathlib import Path
 
@@ -20,7 +15,6 @@ st.set_page_config(page_title="Alerta Temprana Privatizada", page_icon="🛡️"
 
 
 def api(metodo: str, ruta: str, **kwargs):
-    """Llama al backend; devuelve (json, error)."""
     try:
         r = requests.request(metodo, f"{API_URL}{ruta}", timeout=30, **kwargs)
     except requests.ConnectionError:
@@ -33,7 +27,7 @@ def api(metodo: str, ruta: str, **kwargs):
     return r.json(), None
 
 
-st.title("🛡️ Alerta temprana de deserción con analítica privatizada")
+st.title("Alerta temprana de deserción con analítica privatizada")
 st.caption("Demo DS3031 · Datos OULAD (ventana de 60 días) con identidades sintéticas · Ley 29733 / DS 016-2024-JUS")
 
 tab1, tab2, tab3 = st.tabs(["🔍 Auditoría de riesgo y ataque de enlace",

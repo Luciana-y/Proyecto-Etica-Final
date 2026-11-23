@@ -1,8 +1,8 @@
-"""Motor de Privacidad Diferencial: consultas Laplace y modelo DP de alerta temprana.
+# Motor de Privacidad Diferencial: consultas Laplace y modelo DP de alerta temprana.
 
-Preprocesamiento identico a notebooks/02_experimentos_dp_y_equidad.ipynb:
-limites de dominio publicos fijados a priori -> data_norm analitico = sqrt(8 + 7).
-"""
+# Preprocesamiento identico a notebooks/02_experimentos_dp_y_equidad.ipynb:
+# limites de dominio publicos fijados a priori -> data_norm analitico = sqrt(8 + 7).
+
 import os
 import sqlite3
 
@@ -42,7 +42,7 @@ def conectar() -> sqlite3.Connection:
     return sqlite3.connect(DB_PATH)
 
 
-# --- Preprocesamiento ----------------------------------------------------------
+# Preprocesamiento
 def preparar(d: pd.DataFrame, categorias: dict) -> np.ndarray:
     partes = []
     for c, (lo, hi, f) in LIMITES.items():
@@ -55,7 +55,7 @@ def preparar(d: pd.DataFrame, categorias: dict) -> np.ndarray:
     return pd.concat(partes, axis=1).to_numpy()
 
 
-# --- Modelo DP -----------------------------------------------------------------
+# Modelo DP
 class ModeloDP:
     def __init__(self, modelo: DPLogisticRegression, categorias: dict, epsilon: float):
         self.modelo = modelo
@@ -78,7 +78,6 @@ def entrenar_modelo(epsilon: float = EPSILON_MODELO) -> ModeloDP:
 
 
 def cargar_o_entrenar() -> tuple[ModeloDP, bool]:
-    """Devuelve (modelo, recien_entrenado). El entrenamiento consume ε una sola vez."""
     if os.path.exists(RUTA_MODELO):
         m = joblib.load(RUTA_MODELO)
         if isinstance(m, ModeloDP) and m.epsilon == EPSILON_MODELO:
@@ -97,8 +96,7 @@ def nivel_alerta(prob: float) -> str:
     return "baja"
 
 
-# --- Explicaciones accionables (contrafactuales) --------------------------------
-# Solo variables modificables por el estudiante; nunca atributos demograficos.
+# Explicaciones accionables (contrafactuales)
 _ACCIONES = {
     "entregas_60d": (
         lambda v: min(v + 2, 15),
@@ -125,12 +123,8 @@ _ACCIONES = {
 
 def generar_explicacion_accionable(datos_estudiante: dict, prob: float, modelo: ModeloDP | None = None,
                                    max_factores: int = 3) -> list[dict]:
-    """Reason codes contrafactuales en lenguaje simple (sin valores SHAP crudos).
-
-    Cada factor modifica una sola variable accionable, recalcula la probabilidad con el
-    modelo DP (post-procesamiento: sin costo adicional de privacidad) y reporta el cambio.
-    Son estimaciones asociativas del modelo, no efectos causales garantizados.
-    """
+    
+    # Cada factor modifica una sola variable accionable, recalcula la probabilidad con el modelo DP (post-procesamiento: sin costo adicional de privacidad) y reporta el cambio.
     modelo = modelo or MODELO
     base = pd.DataFrame([datos_estudiante])
     candidatos = []
@@ -160,14 +154,10 @@ def generar_explicacion_accionable(datos_estudiante: dict, prob: float, modelo: 
     return candidatos[:max_factores]
 
 
-# --- Consultas agregadas con Laplace ----------------------------------------------
+# Consultas agregadas con Laplace
 def consulta_privatizada(epsilon: float, agrupar_por: str) -> tuple[pd.DataFrame, dict, int]:
-    """Conteo y promedio acotado de promedio_notas_60d por grupo, solo con consentimiento activo.
+    # Conteo y promedio acotado de promedio_notas_60d por grupo, solo con consentimiento activo.
 
-    - Acotamiento de contribucion: 1 fila por estudiante (matricula mas reciente) -> Δf_conteo = 1.
-    - Suma acotada a [0, 100] -> Δf_suma = 100. Promedio = suma_DP / conteo_DP (post-procesamiento).
-    - Grupos disjuntos: composicion paralela. Conteo y suma: ε/2 cada uno (composicion secuencial).
-    """
     if agrupar_por not in ("region", "code_module"):  # lista blanca: se interpola en SQL
         raise ValueError("agrupar_por no permitido")
     with conectar() as con:

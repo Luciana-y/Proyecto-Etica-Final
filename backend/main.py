@@ -1,7 +1,7 @@
-"""API FastAPI: consultas ε-DP con privacy accountant, prediccion explicable, consentimiento y ARCO.
+# API FastAPI: consultas ε-DP con privacy accountant, prediccion explicable, consentimiento y ARCO.
 
-Ejecutar desde la raiz del proyecto:  uvicorn backend.main:app --reload
-"""
+# Ejecutar desde la raiz del proyecto:  uvicorn backend.main:app --reload
+
 import os
 import uuid
 from contextlib import asynccontextmanager
@@ -67,7 +67,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="Alerta Temprana con Analítica Privatizada", version="1.0", lifespan=lifespan)
 
 
-# --- Consultas privatizadas ---------------------------------------------------------
+# Consultas privatizadas
 @app.get("/stats/privatized", response_model=ConsultaPrivatizadaRespuesta)
 def stats_privatizadas(
     epsilon: float = Query(gt=0, le=MAX_EPSILON_POR_CONSULTA),
@@ -97,7 +97,7 @@ def stats_privatizadas(
     }
 
 
-# --- Prediccion de riesgo -------------------------------------------------------------
+# Prediccion de riesgo
 @app.post("/predict/student", response_model=PrediccionRespuesta)
 def predecir_estudiante(sol: PrediccionSolicitud):
     if sol.id_student is not None:
@@ -123,7 +123,7 @@ def predecir_estudiante(sol: PrediccionSolicitud):
     }
 
 
-# --- Consentimiento (Kantara) ----------------------------------------------------------
+# Consentimiento (Kantara)
 def _recibo(fila) -> dict:
     receipt_id, id_student, finalidad, base_legal, otorgado, ts, revocado = fila
     return ConsentReceipt(
@@ -135,7 +135,6 @@ def _recibo(fila) -> dict:
 
 @app.get("/consent/{id_student}", response_model=list[ConsentReceipt])
 def consultar_consentimientos(id_student: int):
-    """Recibos vigentes (el mas reciente por finalidad)."""
     with dp_engine.conectar() as con:
         filas = con.execute("""
             SELECT receipt_id, id_student, finalidad, base_legal, otorgado, timestamp, revocado_en
@@ -149,7 +148,6 @@ def consultar_consentimientos(id_student: int):
 
 @app.post("/consent", response_model=ConsentReceipt)
 def registrar_consentimiento(sol: ConsentimientoSolicitud):
-    """Nueva decision -> nuevo recibo inmutable; el recibo anterior vigente queda cerrado."""
     if BASES_LEGALES[sol.finalidad] != "consentimiento_expreso":
         raise HTTPException(422, detail="Esta finalidad no se basa en consentimiento (Ley 29733, Art. 14).")
     ts = ahora()
@@ -183,7 +181,7 @@ def revocar(sol: RevocacionSolicitud):
             "mensaje": "Consentimiento revocado. Tus datos se excluyen de las consultas de investigación desde ahora."}
 
 
-# --- Auditoria ----------------------------------------------------------------------------
+# Auditoria
 @app.get("/audit/logs", response_model=AuditoriaRespuesta)
 def logs_auditoria(limite: int = Query(20, ge=1, le=200)):
     with dp_engine.conectar() as con:
@@ -200,12 +198,11 @@ def logs_auditoria(limite: int = Query(20, ge=1, le=200)):
 
 @app.post("/audit/nuevo-periodo")
 def nuevo_periodo(responsable: str = Query(min_length=1)):
-    """Abre un nuevo periodo de presupuesto (p. ej. semestral). Queda registrado y no borra el historial."""
     registrar_auditoria(responsable, MARCA_PERIODO, 0.0)
     return {"mensaje": "Nuevo periodo de presupuesto iniciado.", "presupuesto_restante": MAX_EPSILON}
 
 
-# --- Demo pedagogica: ataque de enlace ------------------------------------------------------
+# Demo pedagogica: ataque de enlace
 QI_VALIDOS = ["region", "age_band", "gender", "highest_education", "imd_band", "code_module", "code_presentation"]
 
 

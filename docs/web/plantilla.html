@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{titulo}}</title>
+  <meta name="description" content="Informe técnico-ético: alerta temprana de deserción con privacidad diferencial, DPIA, Datasheet y Model Card.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="estilo.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="barra-movil">
+    <button class="boton-menu" type="button" aria-controls="lateral" aria-expanded="false">☰ Índice</button>
+    <span class="barra-titulo">{{titulo}}</span>
+  </header>
+
+  <nav class="lateral" id="lateral" aria-label="Índice del informe">
+    <div class="lateral-cabecera">
+      <p class="lateral-curso">DS3031 · Ética y Seguridad de Datos</p>
+      <p class="lateral-titulo">{{titulo}}</p>
+    </div>
+    {{indice}}
+  </nav>
+  <div class="velo" hidden></div>
+
+  <main class="contenido">
+    <div class="progreso" aria-hidden="true"><div class="progreso-barra"></div></div>
+    <p class="contador"></p>
+    <article>
+      {{secciones}}
+    </article>
+    <nav class="paginacion" aria-label="Navegación entre secciones">
+      <a class="paso anterior" href="#"><span class="paso-etiqueta">← Anterior</span><span class="paso-titulo"></span></a>
+      <a class="paso siguiente" href="#"><span class="paso-etiqueta">Siguiente →</span><span class="paso-titulo"></span></a>
+    </nav>
+    <footer class="pie-pagina">Valentina Álvarez Beraun · Luciana Yangali Cáceres · Use ← y → para cambiar de sección.</footer>
+  </main>
+</body>
+</html>

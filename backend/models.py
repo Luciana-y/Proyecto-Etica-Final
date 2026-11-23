@@ -1,4 +1,4 @@
-"""Esquemas Pydantic de la API: consultas privatizadas, prediccion, consentimiento (Kantara) y ARCO."""
+# Esquemas Pydantic de la API: consultas privatizadas, prediccion, consentimiento (Kantara) y ARCO.
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
@@ -7,7 +7,7 @@ Finalidad = Literal["alerta_temprana_academica", "investigacion_externa"]
 Agrupacion = Literal["region", "code_module"]
 
 
-# --- Consultas privatizadas -------------------------------------------------
+# Consultas privatizadas
 class FilaPrivatizada(BaseModel):
     grupo: str
     conteo_dp: float
@@ -39,7 +39,7 @@ class ConsultaPrivatizadaRespuesta(BaseModel):
     filas: list[FilaPrivatizada]
 
 
-# --- Prediccion de riesgo ----------------------------------------------------
+# Prediccion de riesgo
 class PerfilEstudiante(BaseModel):
     code_module: str
     code_presentation: str
@@ -86,7 +86,7 @@ class PrediccionRespuesta(BaseModel):
     aviso_art23: str
 
 
-# --- Consentimiento (Kantara Consent Receipt v1.1, subconjunto) --------------
+# Consentimiento (Kantara Consent Receipt v1.1, subconjunto)
 class ConsentimientoSolicitud(BaseModel):
     id_student: int
     finalidad: Finalidad = "investigacion_externa"
@@ -110,7 +110,7 @@ class ConsentReceipt(BaseModel):
     spiCat: list[str] = ["rendimiento_academico", "salud (disability)"]
 
 
-# --- ARCO ---------------------------------------------------------------------
+# ARCO
 class RevocacionSolicitud(BaseModel):
     id_student: int
     finalidad: Finalidad
@@ -124,7 +124,7 @@ class RevocacionRespuesta(BaseModel):
     mensaje: str
 
 
-# --- Auditoria ----------------------------------------------------------------
+# Auditoria
 class RegistroAuditoria(BaseModel):
     log_id: int
     usuario_analista: Optional[str]
@@ -140,7 +140,7 @@ class AuditoriaRespuesta(BaseModel):
     registros: list[RegistroAuditoria]
 
 
-# --- Demo de ataque de enlace ---------------------------------------------------
+# Demo de ataque de enlace
 class EnlaceSolicitud(BaseModel):
     id_student: int
     code_module: str
