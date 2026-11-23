@@ -1,0 +1,17 @@
+pandas
+numpy
+pyarrow
+scikit-learn
+diffprivlib
+fairlearn
+faker
+matplotlib
+nbformat
+nbclient
+ipykernel
+fastapi
+uvicorn[standard]
+pydantic>=2
+streamlit>=1.50
+requests
+joblib

@@ -41,3 +41,8 @@ Thumbs.db
 
 .claude/
 CLAUDE.md
+
+*pdf  
+
+por el momento no se suben los pdfs de la documentación, pero si se suben los notebooks y scripts que generan los pdfs
+backend/artifacts/
