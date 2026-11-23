@@ -1,10 +1,3 @@
-"""Genera el sitio estático del informe (_site/) a partir de docs/informe_final.md.
-
-Uso, desde la raíz del repositorio:  python docs/web/build_site.py
-- Parser CommonMark + tablas (markdown-it-py): renderiza igual que GitHub.
-- Cada sección de nivel 2 (##) se publica como una vista con navegación anterior/siguiente.
-- Las fórmulas $...$ se conservan como \\( \\) y \\[ \\] para KaTeX en el navegador.
-"""
 import html
 import re
 import shutil

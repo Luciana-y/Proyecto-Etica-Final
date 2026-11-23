@@ -57,16 +57,16 @@ Un sistema de este tipo trata **datos personales de menores de edad y adultos j�
 
 ### 1.3 Hallazgos clave
 
-| Hallazgo | Evidencia | Fuente |
-|---|---|---|
-| Seudonimizar no es anonimizar | El ataque de enlace por cuasi-identificadores + curso + semestre re-identifica a **665 de 2,972 personas (22.4 %) con 100 % de precisión** | Notebook 01, §4 |
-| El $k$-anonimato depende del adversario | Con 5 QI demográficos, $k_{min} = 5$. Al añadir curso y semestre, **7,396 matrículas con $k = 1$** y **67.8 % con $k < 5$** | Notebook 01, §2 |
-| $k$ no protege el atributo sensible | **561 clases** (633 estudiantes) donde todos tienen discapacidad; $t_{max} = 0.903$ | Notebook 01, §3 |
-| Generalizar destruye la utilidad | La mejor solución $k \geq 5$ que conserva la cohorte suprime región e IMD: **0 de 22** brechas socioeconómicas calculables (reales: hasta 31 pp) | Notebook 01, §5 |
-| La DP conserva utilidad | Modelo DP con $\epsilon = 5$: **AUC 0.874** frente a 0.877 sin DP. Consultas por región con $\epsilon = 0.1$: error medio ≤ 3.4 % | Notebook 02, §4–5 |
-| Existe impacto dispar | $DI = 0.79$ para discapacidad y $DI = 0.41$ para el decil IMD más pobre (incumple la regla 4/5) | Notebook 02, §1 |
-| Quitar el atributo no basta | La conducta predice la discapacidad con AUC 0.56–0.59 frente a 0.50 del control: $I(A;X) > 0$ | Notebook 02, §2 |
-| La DP no agrava las brechas | No se reproduce *the poor get poorer*: AUC N = 0.874 y AUC Y = 0.873 con $\epsilon = 5$ | Notebook 02, §4 |
+| Hallazgo | Evidencia |
+|---|---|
+| Seudonimizar no es anonimizar | El ataque de enlace por cuasi-identificadores + curso + semestre re-identifica a **665 de 2,972 personas (22.4 %) con 100 % de precisión** |
+| El $k$-anonimato depende del adversario | Con 5 QI demográficos, $k_{min} = 5$. Al añadir curso y semestre, **7,396 matrículas con $k = 1$** y **67.8 % con $k < 5$** |
+| $k$ no protege el atributo sensible | **561 clases** (633 estudiantes) donde todos tienen discapacidad; $t_{max} = 0.903$ |
+| Generalizar destruye la utilidad | La mejor solución $k \geq 5$ que conserva la cohorte suprime región e IMD: **0 de 22** brechas socioeconómicas calculables (reales: hasta 31 pp) |
+| La DP conserva utilidad | Modelo DP con $\epsilon = 5$: **AUC 0.874** frente a 0.877 sin DP. Consultas por región con $\epsilon = 0.1$: error medio ≤ 3.4 % |
+| Existe impacto dispar | $DI = 0.79$ para discapacidad y $DI = 0.41$ para el decil IMD más pobre (incumple la regla 4/5) |
+| Quitar el atributo no basta | La conducta predice la discapacidad con AUC 0.56–0.59 frente a 0.50 del control: $I(A;X) > 0$ |
+| La DP no agrava las brechas | No se reproduce *the poor get poorer*: AUC N = 0.874 y AUC Y = 0.873 con $\epsilon = 5$ |
 
 **Dictamen DPIA:** el tratamiento se **aprueba con condiciones** (sección 2.6). La condición principal es que la alerta sea un insumo para un tutor humano y nunca una decisión automática con efectos sobre el estudiante.
 
@@ -211,24 +211,22 @@ Por prudencia, el sistema se trata como **IA de riesgo alto**: incide en la tray
 
 ### Paso 4 — Medidas de mitigación
 
-**Estado:** ✅ implementado y probado en la demo · 🔶 propuesto para producción.
-
 | Medida | Tipo | Riesgos | Estado |
 |---|---|---|---|
-| **M1.** Los analistas no reciben microdatos; solo agregados con $\epsilon$-DP (Laplace, $\Delta f$ explícito) | Técnica | R1, R2, R3 | ✅ |
-| **M2.** *Privacy accountant*: máximo $\epsilon = 10$ por periodo y 5 por consulta; registro en `audit_logs`; error 403 al excederlo | Técnica | R4, R10 | ✅ |
-| **M3.** Acotamiento de contribución: una fila por estudiante (garantía por persona, no por fila) | Técnica | R4 | ✅ |
-| **M4.** Modelo entrenado con DP (`diffprivlib`, $\epsilon = 5$, `data_norm` analítico) y **no publicado** | Técnica | R4, R5 | ✅ |
-| **M5.** Separación física de identificadores directos (`estudiantes_identidad`) | Técnica | R1, R9 | ✅ |
-| **M6.** Exclusión de `disability` del modelo y auditoría de equidad desagregada | Técnica / organizativa | R5, R7 | ✅ |
-| **M7.** Consentimiento granular por finalidad, simétrico, revocable en un clic, con recibo Kantara | Técnica / legal | R6, R8 | ✅ |
-| **M8.** Bloqueo de la revocación para F1 (base contractual) con redirección al **derecho de oposición** ante el ODP | Legal | R6, R8 | ✅ |
-| **M9.** Explicaciones contrafactuales accionables y aviso del Art. 23 con derecho a revisión humana | Técnica / legal | R6, R7 | ✅ |
-| **M10.** Desactivar `MODO_PEDAGOGICO` (sin valores reales y sin endpoints `/demo`) | Configuración | R11 | ✅ disponible; 🔶 obligatorio en producción |
+| **M1.** Los analistas no reciben microdatos; solo agregados con $\epsilon$-DP (Laplace, $\Delta f$ explícito) | Técnica | R1, R2, R3 | Sí |
+| **M2.** *Privacy accountant*: máximo $\epsilon = 10$ por periodo y 5 por consulta; registro en `audit_logs`; error 403 al excederlo | Técnica | R4, R10 | Sí  |
+| **M3.** Acotamiento de contribución: una fila por estudiante (garantía por persona, no por fila) | Técnica | R4 | Sí  |
+| **M4.** Modelo entrenado con DP (`diffprivlib`, $\epsilon = 5$, `data_norm` analítico) y **no publicado** | Técnica | R4, R5 | Sí  |
+| **M5.** Separación física de identificadores directos (`estudiantes_identidad`) | Técnica | R1, R9 | Sí  |
+| **M6.** Exclusión de `disability` del modelo y auditoría de equidad desagregada | Técnica / organizativa | R5, R7 | Sí  |
+| **M7.** Consentimiento granular por finalidad, simétrico, revocable en un clic, con recibo Kantara | Técnica / legal | R6, R8 | Sí  |
+| **M8.** Bloqueo de la revocación para F1 (base contractual) con redirección al **derecho de oposición** ante el ODP | Legal | R6, R8 | Sí  |
+| **M9.** Explicaciones contrafactuales accionables y aviso del Art. 23 con derecho a revisión humana | Técnica / legal | R6, R7 | Sí  |
+| **M10.** Desactivar `MODO_PEDAGOGICO` (sin valores reales y sin endpoints `/demo`) | Configuración | R11 | Sí  disponible; obligatorio en producción |
 | **M11.** Autenticación de analistas y RBAC por mínimo privilegio. Hoy el campo `analista` es autodeclarado. | Técnica | R9, R10 | 🔶 |
 | **M12.** Cifrado en reposo (SQLCipher o motor gestionado) y TLS en tránsito | Técnica | R9 | 🔶 |
 | **M13.** Logs a prueba de manipulación: solo-anexar con encadenamiento de hashes | Técnica | R10 | 🔶 |
-| **M14.** **Revisión humana obligatoria** de toda alerta antes de cualquier acción; prohibición contractual de usos punitivos | Organizativa | R6, R7 | 🔶 política; ✅ reflejado en el Model Card y en el aviso |
+| **M14.** **Revisión humana obligatoria** de toda alerta antes de cualquier acción; prohibición contractual de usos punitivos | Organizativa | R6, R7 | política; Sí  reflejado en el Model Card y en el aviso |
 | **M15.** Presupuesto de producción reducido: $\epsilon \leq 2$ por semestre para consultas ($\epsilon = 0.5$ por consulta) | Organizativa | R4 | 🔶 |
 | **M16.** Retención: datos conductuales hasta el fin del ciclo + 1 año; reentrenamiento como máximo semestral; borrado verificable en *backups* | Organizativa | R9 | 🔶 |
 | **M17.** Capacitación de tutores: la probabilidad es orientativa, el sesgo es conocido y el lenguaje no debe estigmatizar | Organizativa | R7 | 🔶 |
@@ -291,11 +289,11 @@ Por prudencia, el sistema se trata como **IA de riesgo alto**: incide en la tray
 | Derecho | Implementación |
 |---|---|
 | **Acceso** | `GET /consent/{id}` devuelve los recibos; `POST /predict/student` muestra al estudiante su propia evaluación |
-| **Rectificación** | 🔶 Solicitud al ODP; los datos académicos se corrigen en el sistema fuente y se propagan en el siguiente ETL |
+| **Rectificación** | Solicitud al ODP; los datos académicos se corrigen en el sistema fuente y se propagan en el siguiente ETL |
 | **Cancelación (supresión)** | Para F2, la revocación excluye al estudiante de inmediato de toda consulta futura (filtro `revocado_en IS NULL`). Lo ya publicado con DP no se puede "retirar", pero la garantía DP acota lo que revela sobre la persona. Para F1, la supresión procede al terminar la relación contractual (M16). |
 | **Oposición** | Para F1, como la base no es el consentimiento, la "revocación" se redirige al **derecho de oposición** ante el ODP (respuesta 422 con instrucciones). El ODP evalúa la situación particular del estudiante. |
 | **Tratamiento objetivo (Art. 23)** | Aviso explícito, explicación accionable, revisión humana e impugnación |
-| **Portabilidad** | 🔶 Exportación en JSON de los recibos y de las variables propias |
+| **Portabilidad** | Exportación en JSON de los recibos y de las variables propias |
 | **Desindexación** | No aplica: el sistema no publica datos en buscadores |
 
 ### 2.8 Procedimiento ante brechas de seguridad
@@ -607,12 +605,12 @@ Se probaron seis valores, $\epsilon \in \{0.1, 0.5, 1, 2, 5, 10\}$, con **10 eje
 - **Lectura:** la probabilidad es un **insumo orientativo** que un humano revisa.
 
 **Usos prohibidos o fuera de alcance**
-- ❌ Retiro, suspensión, sanción, pérdida de beca o restricción de matrícula basados en la alerta, **con o sin** intervención humana nominal.
-- ❌ Cualquier decisión automática con efectos sobre el estudiante sin revisión humana sustantiva (Ley 29733, Art. 23; GDPR Art. 22).
-- ❌ Admisión, selección de becarios o rankings de estudiantes.
-- ❌ Compartir puntajes individuales con terceros (familia, empleadores, otras instituciones) sin base legal.
-- ❌ Usar el modelo en otra población sin reentrenar y re-auditar (sección 4.1, validez externa).
-- ❌ Inferir o etiquetar la discapacidad de un estudiante.
+- Retiro, suspensión, sanción, pérdida de beca o restricción de matrícula basados en la alerta, **con o sin** intervención humana nominal.
+- Cualquier decisión automática con efectos sobre el estudiante sin revisión humana sustantiva (Ley 29733, Art. 23; GDPR Art. 22).
+- Admisión, selección de becarios o rankings de estudiantes.
+- Compartir puntajes individuales con terceros (familia, empleadores, otras instituciones) sin base legal.
+- Usar el modelo en otra población sin reentrenar y re-auditar (sección 4.1, validez externa).
+- Inferir o etiquetar la discapacidad de un estudiante.
 
 **Métricas globales** (partición de prueba agrupada por estudiante; DP = media de 10 ejecuciones)
 
@@ -688,10 +686,10 @@ La función `generar_explicacion_accionable` (`backend/dp_engine.py`):
 |---|---|---|---|
 | **1. Adquisición** | Uso de datos del aula virtual recolectados para gestionar el curso, no para predecir (limitación de propósito). Sesgo de muestreo: OULAD ≠ población peruana. **Sesgo de consentimiento:** las consultas F2 solo representan a quienes consienten (en la simulación fue al azar; en la realidad puede correlacionar con nivel socioeconómico o confianza institucional). | Aviso de privacidad por capas que declara F1 desde la matrícula. Bases legales separadas. Reentrenamiento con datos locales. Reportar el $n$ y la representatividad de F2 junto a cada estadística. | ODP; responsable de datos académicos |
 | **2. Preparación** | **Definición operacional del target:** agrupar Withdrawn con Fail equipara "abandonó por trabajo o salud" con "desaprobó". Riesgo de fuga temporal. Imputar 0 confunde "sin datos" con "sin actividad". | Exclusión de `date_unregistration`. Ventana estricta ≤ 60 días. Imputación documentada en el Datasheet. Etiquetas derivadas de registros administrativos (sin *ghost work* de anotación manual). | Equipo de ciencia de datos |
-| **3. Almacenamiento** | Confidencialidad: identidades y datos sensibles en el mismo archivo SQLite sin cifrar. Integridad: logs modificables. | Separación de `estudiantes_identidad` (✅). Cifrado en reposo, RBAC de mínimo privilegio y logs encadenados (🔶). Base excluida del control de versiones (✅). | Responsable técnico |
+| **3. Almacenamiento** | Confidencialidad: identidades y datos sensibles en el mismo archivo SQLite sin cifrar. Integridad: logs modificables. | Separación de `estudiantes_identidad` (**Sí**). Cifrado en reposo, RBAC de mínimo privilegio y logs encadenados. Base excluida del control de versiones (**Sí**). | Responsable técnico |
 | **4. Análisis** | Confundir correlación con causalidad (los contrafactuales no son causales). *p-hacking* al elegir $\epsilon$ o el umbral. Uso de *proxies*. | Criterios de selección de $\epsilon$ **pre-registrados**. Partición agrupada por estudiante. Prueba de *proxies* con control permutado. Avisos de "estimación asociativa". | Equipo de ciencia de datos; comité de ética |
-| **5. Retención** | Conservar indefinidamente la conducta de estudiantes egresados. Un modelo entrenado "recuerda" a quienes revocaron. | Plazo: fin del ciclo + 1 año para datos conductuales (🔶). Borrado verificable en *backups*. Revocación con efecto inmediato en consultas. **Desaprendizaje automático** mediante reentrenamiento semestral sin los registros suprimidos, más simple y verificable que *unlearning* aproximado. La DP acota además la influencia residual de cada persona en el modelo. | ODP; responsable técnico |
-| **6. Intercambio** | Pérdida de control al compartir con investigadores externos; re-identificación (22.4 % demostrado). | **Solo agregados DP**, nunca microdatos. Presupuesto por periodo. Analistas autenticados (🔶). SCC si hay transferencia internacional. | ODP; comité de investigación |
+| **5. Retención** | Conservar indefinidamente la conducta de estudiantes egresados. Un modelo entrenado "recuerda" a quienes revocaron. | Plazo: fin del ciclo + 1 año para datos conductuales. Borrado verificable en *backups*. Revocación con efecto inmediato en consultas. **Desaprendizaje automático** mediante reentrenamiento semestral sin los registros suprimidos, más simple y verificable que *unlearning* aproximado. La DP acota además la influencia residual de cada persona en el modelo. | ODP; responsable técnico |
+| **6. Intercambio** | Pérdida de control al compartir con investigadores externos; re-identificación (22.4 % demostrado). | **Solo agregados DP**, nunca microdatos. Presupuesto por periodo. Analistas autenticados. SCC si hay transferencia internacional. | ODP; comité de investigación |
 
 ### 5.2 Validez del consentimiento en el entorno universitario
 
