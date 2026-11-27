@@ -130,9 +130,10 @@ tbody tr:last-child td { border-bottom: 0; }
 tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--superficie-2) 45%, transparent); }
 
 /* Figuras */
-figure { margin: 2rem 0 0.5rem; }
+figure { margin: 2rem auto 0.5rem; max-width: 88%; }
 figure img {
   display: block;
+  margin: 0 auto;
   width: 100%;
   height: auto;
   background: #fcfcfb;
@@ -140,7 +141,35 @@ figure img {
   border-radius: 8px;
   padding: 0.5rem;
 }
-.pie { color: var(--tinta-2); font-size: 0.88rem; line-height: 1.55; margin-bottom: 1.25rem; }
+.pie { color: var(--tinta-2); font-size: 0.88rem; line-height: 1.55; margin: 0 auto 1.25rem; max-width: 88%; text-align: center; }
+
+/* Conclusión destacada al inicio de cada sección */
+blockquote {
+  margin: 0 0 1.75rem;
+  padding: 0.9rem 1.1rem;
+  border-left: 4px solid var(--acento);
+  background: var(--acento-suave);
+  border-radius: 0 8px 8px 0;
+}
+blockquote p { margin: 0; }
+
+/* Tablas y referencias plegables */
+details {
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  background: var(--superficie);
+}
+details > summary {
+  cursor: pointer;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  color: var(--acento);
+}
+details[open] > summary { border-bottom: 1px solid var(--linea); }
+details > :not(summary) { margin-left: 1rem; margin-right: 1rem; }
+details > .tabla { margin-top: 1rem; }
+@media print { details > :not(summary) { display: block; } }
 .lectura {
   margin: 0 0 0.4rem;
   font-size: 0.78rem;
